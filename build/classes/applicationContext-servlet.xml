@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+        <mvc:annotation-driven />  
+
+<context:component-scan base-package="com.lip6.controllers.*" />
+<context:annotation-config/>
+<mvc:default-servlet-handler/>
+<bean id="viewResolver"
+      class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+      <property name="prefix" value="/index" />
+      
+      <property name="suffix" value=".html" />
+</bean>
+
+ <!-- via le formulaire   -->  
+<bean id="contactform" class="com.lip6.entities.Contact">
+	 <property name="address"> <ref bean="ContactFormAdresseBean"/></property>
+		<property name="phones">
+			<list>
+		       <ref bean= "ContactFormPhoneNumberBean"></ref>
+		    </list>
+	  </property>
+		<property name="contactGroups">
+			<list>
+		       <ref bean="ContactFormGroupsBean"></ref>
+		    </list>
+		</property>
+</bean>
+<bean id="ContactFormAdresseBean" class="com.lip6.entities.Address">
+	<property name="contact"> <ref bean="contactform"/></property>
+</bean>
+
+<bean id="ContactFormPhoneNumberBean" class="com.lip6.entities.PhoneNumber">
+	<property name="contact"> <ref bean="contactform"/></property>
+</bean>
+<bean id="ContactFormGroupsBean"  class="com.lip6.entities.ContactGroup">
+	<property name="contacts"> 
+	    <list>
+	       <ref bean= "contactform"></ref>
+	    </list>
+    </property>
+</bean>
+
+
+
+<bean id="cservice" class="com.lip6.services.ServiceContact"/>
+<bean id="cdao" class="com.lip6.daos.DAOContact"/>
+
+<!--  declaration d'un bean avec toutes ses ref 1 contact par setter -->
+<bean id="contact1" class="com.lip6.entities.Contact">
+    <property name="firstName" value ="Anis"> </property>
+    <property name="lastName" value ="Yahiaoui"> </property>
+    <property name="email" value ="Anis22@gmail.com"> </property>
+    <property name="address"> <ref bean="Contact1AdresseBean"/></property>
+	<property name="phones">
+		<list>
+	       <ref bean= "Contact1PhoneNumberBean"></ref>
+	    </list>
+  </property>
+	<property name="contactGroups">
+		<list>
+	       <ref bean="ContactGroupsBean"></ref>
+	    </list>
+	</property>
+    
+</bean>
+<bean id="Contact1AdresseBean" class="com.lip6.entities.Address">
+	<property name="address" value ="2 avenue de Capitaine Glarner, saint Denis"> </property>
+	<property name="contact"> <ref bean="contact1"/></property>
+</bean>
+
+<bean id="Contact1PhoneNumberBean" class="com.lip6.entities.PhoneNumber">
+	<property name="phoneNumber" value ="0552846291"> </property>
+	<property name="contact"> <ref bean="contact1"/></property>
+</bean>
+
+<bean id="ContactGroupsBean"  class="com.lip6.entities.ContactGroup">
+	<property name="contacts"> 
+	    <list>
+	       <ref bean= "contact1"></ref>
+	    </list>
+    </property>
+</bean>
+
+<!--  declaration d'un bean avec toutes ses ref 1 contact par contructeur -->
+ <!--pour les ref ce n'est pas possible d'utiliser l'injection par constructeur car ça génère unz dépendance circulaire insoluble de pref la configuration par setter pour ces injections-->
+<bean id="contact2" class="com.lip6.entities.Contact">
+    <constructor-arg value ="Lamine"/>
+    <constructor-arg value ="akkoura"/>
+    <constructor-arg value ="lamine@gmail.com"/>
+     <property name="address"> <ref bean="Contact2AdresseBean" /></property>
+     <property name="phones">
+         <list>
+	       <ref bean= "Contact2PhoneNumberBean"></ref>
+	    </list>
+     </property>
+     <property name="contactGroups">
+       <list>
+	       <ref bean="Contact2GroupsBean"></ref>
+	    </list>
+     </property>
+</bean>
+
+<bean id="Contact2AdresseBean" class="com.lip6.entities.Address">
+	<constructor-arg value ="Noisiel 77"> </constructor-arg>
+	<constructor-arg><ref bean="contact2"/></constructor-arg>
+	
+</bean>
+
+<bean id="Contact2PhoneNumberBean" lazy-init = "true" class="com.lip6.entities.PhoneNumber">
+	<constructor-arg value ="0666027756"> </constructor-arg>
+	<constructor-arg> <ref bean="contact2"/></constructor-arg>
+</bean>
+
+<bean id="Contact2GroupsBean" lazy-init="true" class="com.lip6.entities.ContactGroup">
+	<constructor-arg> 
+	    <list>
+	       <ref bean= "contact2"></ref>
+	    </list>
+    </constructor-arg>
+</bean>
+
+
+</beans>
+

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://JAVA.sun.com/xml/ns/javaee" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+	<display-name>GestionContactProjet</display-name>
+	<absolute-ordering />
+	
+	<!-- dans le cas ou on souhaite charger uniquement l'XML dans le contexte de la servlet 
+	si on veut cumuler avec les annotations, on passe par la class config et un import resources-->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+   <context-param>
+		<param-name>contextClass</param-name>
+		<param-value>
+		 	org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+		 </param-value>
+	</context-param>
+		<!-- DispatcherServlet loads its application context with beans defined in a file whose name is based on servlet name. E.g., if servlet name is 'blah', then an XML file /WEB-INF/blah-context.xml -->
+	<servlet>
+		<servlet-name>applicationContext</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+		</init-param>
+    	<init-param>
+		   <param-name>contextConfigLocation</param-name>
+			<param-value>com.lip6.configuration</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>applicationContext</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+</web-app>
