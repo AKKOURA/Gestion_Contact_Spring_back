@@ -28,13 +28,13 @@ public class ContactController {
 	
 	@ResponseBody
 	@GetMapping(value="/contacts", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ArrayList<Contact>  getAllProducts() {
+	public ArrayList<Contact>  getAllContacts() {
 		return cservice.getContacts();
 	}
 
 
 	@GetMapping(value="/delete/{id}")
-	public boolean deleteProductById(@PathVariable int id){
+	public boolean deleteContactById(@PathVariable int id){
 		return cservice.deleteContact(id);
 	}
 
@@ -44,8 +44,12 @@ public class ContactController {
 	}
 
 	@PostMapping(value="/update")
-	public boolean updateProduct(@RequestBody  Contact contact){
+	public boolean updateContact(@RequestBody  Contact contact){
 		return cservice.updateContact(contact);
 	}
-
+    
+	@PostMapping(value="/edit")
+	public boolean editContact (@RequestBody  Contact contact){
+		return cservice.editContact(contact);
+	}
 }

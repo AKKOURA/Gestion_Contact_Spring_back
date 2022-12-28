@@ -9,6 +9,7 @@ public interface IDAOContact {
 
 	
 	public  boolean addContact( Contact contact);
+	public  boolean updateContact(Contact contact);
 	
 	public  boolean addContact( String firstname, String lastname, String email);
 	

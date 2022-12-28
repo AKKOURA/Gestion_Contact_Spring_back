@@ -10,7 +10,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lip6.entities.Address;
 import com.lip6.entities.Contact;
@@ -22,7 +24,14 @@ import com.lip6.util.JpaUtil;
 @Repository
 public class DAOContact implements IDAOContact {
 
-
+	//création par setter
+		@Autowired 
+		private Contact contact1;
+		
+		//création par constructeur
+		@Autowired 
+		private Contact contact2;
+		
 	//réation de contact par constructeur ou setter
 	@Override
 	public boolean addContact(Contact contact) {
@@ -32,7 +41,9 @@ public class DAOContact implements IDAOContact {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		// 4 : Persistance Objet/Relationnel : création d'un enregistrement en base, 
-		//lorsque les assocations seront présentes alors on persist que le contact
+		//lorsque les assocations seront présentes alors on persist que le contact)
+		em.persist(contact1);
+		em.persist(contact2);
 		em.persist(contact);
 		// 5 : Fermeture transaction
 		tx.commit();
@@ -52,6 +63,7 @@ public class DAOContact implements IDAOContact {
 	 * @return renvoit le nouveau contact
 	 */
 	//création de contact via le formulaire
+	@Transactional
 	@Override
 	public  boolean addContact(String firstname, String lastname, String email) {
 
@@ -359,6 +371,20 @@ public class DAOContact implements IDAOContact {
 		}
 		return contacts;
 		
+	}
+
+
+	@Override
+	public boolean updateContact(Contact contact) {
+		//1: obtenir une connexion et un EntityManager, en passant par la classe JpaUtil
+				EntityManager em=JpaUtil.getEmf().createEntityManager();
+			     em.createNativeQuery("UPDATE contact SET firstName=?, lastName=?, email=? WHERE id_contact=?")
+	                .setParameter(1, contact.getFirstName())
+	                .setParameter(2,  contact.getLastName())
+	                .setParameter(3,  contact.getEmail())
+	                .setParameter(4, contact.getIdContact())
+	                .executeUpdate();
+				return true;
 	}
 
 

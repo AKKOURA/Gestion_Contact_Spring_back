@@ -14,7 +14,7 @@ public class ServiceContact implements IServiceContact{
 	//déclaration d'injection de dépendance par annotation
 	@Autowired 
 	private IDAOContact cdao;
-
+	
 	@Override
 	public ArrayList<Contact>  getContacts() {
 	   return cdao.getContacts();
@@ -52,6 +52,13 @@ public class ServiceContact implements IServiceContact{
 	public boolean updateContact(Contact contact) {
 		return cdao.modifyContact(contact.getIdContact(), contact.getFirstName(), contact.getLastName(), contact.getEmail());
 	}
+
+	@Override
+	public boolean editContact(Contact contact) {
+		// TODO Auto-generated method stub
+		return cdao.updateContact(contact);
+	}
+
 
 	
 

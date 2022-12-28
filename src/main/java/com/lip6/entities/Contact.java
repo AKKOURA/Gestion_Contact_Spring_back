@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.springframework.stereotype.Component;
 
 
 @Entity
