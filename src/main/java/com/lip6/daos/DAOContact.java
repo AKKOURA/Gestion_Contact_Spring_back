@@ -1,11 +1,13 @@
 	package com.lip6.daos;
 
+import java.io.Console;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -42,8 +44,11 @@ public class DAOContact implements IDAOContact {
 		tx.begin();
 		// 4 : Persistance Objet/Relationnel : création d'un enregistrement en base, 
 		//lorsque les assocations seront présentes alors on persist que le contact)
-		em.persist(contact1);
-		em.persist(contact2);
+		if(em.find(Contact.class, contact1.getIdContact()) == null && em.find(Contact.class, contact2.getIdContact()) == null) {
+			em.persist(contact1);
+			em.persist(contact2);
+		}
+	     
 		em.persist(contact);
 		// 5 : Fermeture transaction
 		tx.commit();
@@ -199,6 +204,8 @@ public class DAOContact implements IDAOContact {
 			Class.forName(Messages.getString("driver"));
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
+			System.out.printf("zzzzzzzzzzz",id);
+			System.out.println(id);
 			Statement stmt = con.createStatement();
 			String sqlFirstName = "UPDATE contact SET firstName = " + "'" + firstname + "'" + " WHERE idContact = " + id;
 			String sqlLastName = "UPDATE contact SET lastName = " + "'" + lastname + "'" + " WHERE idContact = " + id;
@@ -347,12 +354,13 @@ public class DAOContact implements IDAOContact {
 		ResultSet rec = null;
 		Connection con = null;
 		try {
+			EntityManager em=JpaUtil.getEmf().createEntityManager();
 			Class.forName(Messages.getString("driver"));
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
 			Statement stmt = con.createStatement();
 			rec = stmt.executeQuery("SELECT * FROM contact");
-
+			//contact.setAddress(em.find(Address.class, Long.parseLong(rec.getString("id_address"))));
 			while (rec.next()) {
 				Contact contact = new Contact();
 				contact.setIdContact(Long.parseLong(rec.getString("idContact")));
@@ -377,13 +385,18 @@ public class DAOContact implements IDAOContact {
 	@Override
 	public boolean updateContact(Contact contact) {
 		//1: obtenir une connexion et un EntityManager, en passant par la classe JpaUtil
+		        System.out.printf("zzzzzzzzzzz",contact);
 				EntityManager em=JpaUtil.getEmf().createEntityManager();
-			     em.createNativeQuery("UPDATE contact SET firstName=?, lastName=?, email=? WHERE id_contact=?")
-	                .setParameter(1, contact.getFirstName())
-	                .setParameter(2,  contact.getLastName())
-	                .setParameter(3,  contact.getEmail())
-	                .setParameter(4, contact.getIdContact())
-	                .executeUpdate();
+				Contact previousContact = em.find(Contact.class, contact.getIdContact());
+				
+				previousContact.setFirstName(contact.getFirstName());
+				previousContact.setLastName(contact.getLastName());
+				previousContact.setEmail(contact.getEmail());
+				/*previousContact.setAddress(contact.getAddress());
+				previousContact.setPhones(contact.getPhones());
+				previousContact.setContactGroups(contact.getContactGroups());*/
+
+				em.getTransaction().commit();
 				return true;
 	}
 

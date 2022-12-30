@@ -50,6 +50,6 @@ public class ContactController {
     
 	@PostMapping(value="/edit")
 	public boolean editContact (@RequestBody  Contact contact){
-		return cservice.editContact(contact);
+		return cservice.updateContact(contact);
 	}
 }

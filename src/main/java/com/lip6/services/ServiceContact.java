@@ -53,6 +53,7 @@ public class ServiceContact implements IServiceContact{
 		return cdao.modifyContact(contact.getIdContact(), contact.getFirstName(), contact.getLastName(), contact.getEmail());
 	}
 
+	
 	@Override
 	public boolean editContact(Contact contact) {
 		// TODO Auto-generated method stub
