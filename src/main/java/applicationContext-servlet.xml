@@ -28,39 +28,8 @@
       <property name="suffix" value=".html" />
 </bean>
 
- <!-- via le formulaire   -->  
-<bean id="contactform" class="com.lip6.entities.Contact">
-	 <property name="address"> <ref bean="ContactFormAdresseBean"/></property>
-		<property name="phones">
-			<list>
-		       <ref bean= "ContactFormPhoneNumberBean"></ref>
-		    </list>
-	  </property>
-		<property name="contactGroups">
-			<list>
-		       <ref bean="ContactFormGroupsBean"></ref>
-		    </list>
-		</property>
-</bean>
-<bean id="ContactFormAdresseBean" class="com.lip6.entities.Address">
-	<property name="contact"> <ref bean="contactform"/></property>
-</bean>
-
-<bean id="ContactFormPhoneNumberBean" class="com.lip6.entities.PhoneNumber">
-	<property name="contact"> <ref bean="contactform"/></property>
-</bean>
-<bean id="ContactFormGroupsBean"  class="com.lip6.entities.ContactGroup">
-	<property name="contacts"> 
-	    <list>
-	       <ref bean= "contactform"></ref>
-	    </list>
-    </property>
-</bean>
-
-
-
-<bean id="cservice" class="com.lip6.services.ServiceContact"/>
 <bean id="cdao" class="com.lip6.daos.DAOContact"/>
+<bean id="cservice" class="com.lip6.services.ServiceContact"/>
 
 <!--  declaration d'un bean avec toutes ses ref 1 contact par setter -->
 <bean id="contact1" class="com.lip6.entities.Contact">
@@ -91,6 +60,7 @@
 </bean>
 
 <bean id="ContactGroupsBean"  class="com.lip6.entities.ContactGroup">
+	<property name="label" value ="Famille"> </property>
 	<property name="contacts"> 
 	    <list>
 	       <ref bean= "contact1"></ref>
@@ -129,6 +99,7 @@
 </bean>
 
 <bean id="Contact2GroupsBean" lazy-init="true" class="com.lip6.entities.ContactGroup">
+<constructor-arg value ="Amis"/>
 	<constructor-arg> 
 	    <list>
 	       <ref bean= "contact2"></ref>

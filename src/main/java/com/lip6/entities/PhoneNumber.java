@@ -20,7 +20,7 @@ public class PhoneNumber {
 
 	@ManyToOne
 	@JoinColumn(name="id_contact")
-	private Contact contact=null;
+	private Contact contact;
 
 	public PhoneNumber(String phoneNumber, Contact contact) {
 		super();

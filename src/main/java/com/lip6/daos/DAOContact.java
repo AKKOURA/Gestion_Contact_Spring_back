@@ -26,7 +26,7 @@ import com.lip6.util.JpaUtil;
 @Repository
 public class DAOContact implements IDAOContact {
 
-	//création par setter
+	   //création par setter
 		@Autowired 
 		private Contact contact1;
 		
@@ -50,6 +50,8 @@ public class DAOContact implements IDAOContact {
 		}
 	     
 		em.persist(contact);
+		contact.getPhones().forEach(p -> p.setContact(contact));
+	   
 		// 5 : Fermeture transaction
 		tx.commit();
 		// 6 : Fermeture de l'EntityManager et de unité de travail JPA
@@ -355,6 +357,7 @@ public class DAOContact implements IDAOContact {
 		Connection con = null;
 		try {
 			EntityManager em=JpaUtil.getEmf().createEntityManager();
+			
 			Class.forName(Messages.getString("driver"));
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
@@ -363,10 +366,12 @@ public class DAOContact implements IDAOContact {
 			//contact.setAddress(em.find(Address.class, Long.parseLong(rec.getString("id_address"))));
 			while (rec.next()) {
 				Contact contact = new Contact();
+				//Address adr = em.find(Address.class, Long.parseLong(rec.getString("id_address")));
 				contact.setIdContact(Long.parseLong(rec.getString("idContact")));
 				contact.setFirstName(rec.getString("firstName"));
 				contact.setLastName(rec.getString("lastName"));
 				contact.setEmail(rec.getString("email"));
+				//contact.setAddress(adr);
 				contacts.add(contact);
 			}
 

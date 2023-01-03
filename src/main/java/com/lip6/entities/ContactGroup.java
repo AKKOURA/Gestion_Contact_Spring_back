@@ -18,14 +18,39 @@ public class ContactGroup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long idContactGroup;
-	//private String contact;
+	private String label;
 
 	@ManyToMany(mappedBy="contactGroups")
 	private Set <Contact> contacts=new HashSet<Contact>();
 	
+
+	public ContactGroup(String label) {
+		super();
+		this.label = label;
+	}
+
+
 	public ContactGroup() {
 		super();
 	}
+
+
+	public ContactGroup(String label, Set<Contact> contacts) {
+		super();
+		this.label = label;
+		this.contacts = contacts;
+	}
+
+
+	public String getLabel() {
+		return label;
+	}
+
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 
 	public ContactGroup(Set<Contact> contacts) {
 		super();

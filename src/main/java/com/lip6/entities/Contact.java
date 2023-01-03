@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,14 +28,14 @@ public class Contact {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long idContact;
 	
-	@OneToOne(cascade=CascadeType.PERSIST)
+	@OneToOne(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
 	@JoinColumn(name="id_address")
 	private Address address;
 	
-	@OneToMany(cascade=CascadeType.ALL,mappedBy="contact")
+	@OneToMany(cascade=CascadeType.ALL,mappedBy="contact",fetch=FetchType.EAGER)
 	Set<PhoneNumber> phones = new HashSet<PhoneNumber>();
 	
-	@ManyToMany(cascade=CascadeType.PERSIST)
+	@ManyToMany(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
 	@JoinTable(name="CTC_GRP",
 	joinColumns=@JoinColumn(name="CTC_ID"),
 	inverseJoinColumns=@JoinColumn(name="GRP_ID"))
