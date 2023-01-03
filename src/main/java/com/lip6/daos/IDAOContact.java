@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lip6.entities.Contact;
+import com.lip6.entities.ContactGroup;
+import com.lip6.entities.PhoneNumber;
 
 public interface IDAOContact {
 
@@ -26,5 +28,11 @@ public interface IDAOContact {
 	public ArrayList<Contact> getContactByEmail(String email);
 
 	public ArrayList<Contact> getContacts();
+	
+	public ArrayList<PhoneNumber> getPhonesByIdContact(int idContact);
+	public ArrayList<ContactGroup> getGroupesByIdContact(int idContact);
+	
+	public ArrayList<PhoneNumber> getPhones();
+	public ArrayList<ContactGroup> getGroupes();
 	
 }

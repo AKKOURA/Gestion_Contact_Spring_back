@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lip6.entities.Contact;
+import com.lip6.entities.ContactGroup;
+import com.lip6.entities.PhoneNumber;
 
 public interface IServiceContact {
 	
@@ -13,6 +15,10 @@ public interface IServiceContact {
 	public boolean editContact(Contact contact);
 	public boolean updateContact(Contact contact);
 	public boolean deleteContact(int id);
+	public ArrayList<PhoneNumber> getPhonesByIdContact(int idContact);
+	public ArrayList<ContactGroup> getGroupesByIdContact(int idContact);
+	public ArrayList<PhoneNumber> getPhones();
+	public ArrayList<ContactGroup> getGroupes();
 
 
 }

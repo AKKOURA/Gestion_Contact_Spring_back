@@ -404,6 +404,132 @@ public class DAOContact implements IDAOContact {
 				em.getTransaction().commit();
 				return true;
 	}
+	
+	@Override
+	public ArrayList<PhoneNumber> getPhonesByIdContact(int idContact) {
+		ArrayList<PhoneNumber> phones = new ArrayList<PhoneNumber>();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			
+		Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM phonenumber where id_contact =" + "'" + idContact + "'");
+			while (rec.next()) {
+				PhoneNumber phone = new PhoneNumber();
+				phone.setIdPhoneNumber(Long.parseLong(rec.getString("idPhoneNumber")));
+				phone.setPhoneNumber(rec.getString("phoneNumber"));
+				phones.add(phone);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return phones;	
+	}
+
+
+	@Override
+	public ArrayList<ContactGroup> getGroupesByIdContact(int idContact) {
+		ArrayList<ContactGroup> groupes = new ArrayList<ContactGroup>();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			
+		Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM contactgroup g join ctc_grp  cg on cg.GRP_ID = g.idContactGroup and g.CTC_ID =" + "'" + idContact + "'" );
+			
+			while (rec.next()) {
+				ContactGroup groupe = new ContactGroup();
+				groupe.setIdContactGroup(Long.parseLong(rec.getString("idContactGroup")));
+				groupe.setLabel(rec.getString("label"));
+				groupes.add(groupe);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return groupes;	
+	}
+
+
+	@Override
+	public ArrayList<PhoneNumber> getPhones() {
+		ArrayList<PhoneNumber> phones = new ArrayList<PhoneNumber>();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			
+		Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM phonenumber where id_contact is null");
+			while (rec.next()) {
+				PhoneNumber phone = new PhoneNumber();
+				phone.setIdPhoneNumber(Long.parseLong(rec.getString("idPhoneNumber")));
+				phone.setPhoneNumber(rec.getString("phoneNumber"));
+				phones.add(phone);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return phones;	
+	}
+
+
+	@Override
+	public ArrayList<ContactGroup> getGroupes() {
+		ArrayList<ContactGroup> groupes = new ArrayList<ContactGroup>();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			
+		Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM contactgroup" );
+			
+			while (rec.next()) {
+				ContactGroup groupe = new ContactGroup();
+				groupe.setIdContactGroup(Long.parseLong(rec.getString("idContactGroup")));
+				groupe.setLabel(rec.getString("label"));
+				groupes.add(groupe);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return groupes;	
+	}
+	
 
 
 }

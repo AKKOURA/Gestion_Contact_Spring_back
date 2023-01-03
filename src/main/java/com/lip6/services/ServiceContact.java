@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.lip6.daos.IDAOContact;
 import com.lip6.entities.Contact;
+import com.lip6.entities.ContactGroup;
+import com.lip6.entities.PhoneNumber;
 
 @Service
 public class ServiceContact implements IServiceContact{
@@ -58,6 +60,26 @@ public class ServiceContact implements IServiceContact{
 	public boolean editContact(Contact contact) {
 		// TODO Auto-generated method stub
 		return cdao.updateContact(contact);
+	}
+
+	@Override
+	public ArrayList<PhoneNumber> getPhonesByIdContact(int idContact) {
+		return cdao.getPhonesByIdContact(idContact);
+	}
+
+	@Override
+	public ArrayList<ContactGroup> getGroupesByIdContact(int idContact) {
+		return cdao.getGroupesByIdContact(idContact);
+	}
+
+	@Override
+	public ArrayList<PhoneNumber> getPhones() {
+		return cdao.getPhones();
+	}
+
+	@Override
+	public ArrayList<ContactGroup> getGroupes() {
+		return cdao.getGroupes();
 	}
 
 
