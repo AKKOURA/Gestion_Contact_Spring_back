@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lip6.daos.IDAOContact;
+import com.lip6.entities.Address;
 import com.lip6.entities.Contact;
 import com.lip6.entities.ContactGroup;
 import com.lip6.entities.PhoneNumber;
@@ -63,12 +64,12 @@ public class ServiceContact implements IServiceContact{
 	}
 
 	@Override
-	public ArrayList<PhoneNumber> getPhonesByIdContact(int idContact) {
+	public ArrayList<PhoneNumber> getPhonesByIdContact(Long idContact) {
 		return cdao.getPhonesByIdContact(idContact);
 	}
 
 	@Override
-	public ArrayList<ContactGroup> getGroupesByIdContact(int idContact) {
+	public ArrayList<ContactGroup> getGroupesByIdContact(Long idContact) {
 		return cdao.getGroupesByIdContact(idContact);
 	}
 
@@ -81,6 +82,8 @@ public class ServiceContact implements IServiceContact{
 	public ArrayList<ContactGroup> getGroupes() {
 		return cdao.getGroupes();
 	}
+
+
 
 
 	

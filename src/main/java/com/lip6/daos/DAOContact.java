@@ -363,15 +363,16 @@ public class DAOContact implements IDAOContact {
 					Messages.getString("password"));
 			Statement stmt = con.createStatement();
 			rec = stmt.executeQuery("SELECT * FROM contact");
-			//contact.setAddress(em.find(Address.class, Long.parseLong(rec.getString("id_address"))));
 			while (rec.next()) {
 				Contact contact = new Contact();
-				//Address adr = em.find(Address.class, Long.parseLong(rec.getString("id_address")));
+				Address adr = getAdressByIdContact(Long.parseLong(rec.getString("idContact")));
+				ArrayList<PhoneNumber> phones = getPhonesByIdContact(Long.parseLong(rec.getString("idContact")));
 				contact.setIdContact(Long.parseLong(rec.getString("idContact")));
 				contact.setFirstName(rec.getString("firstName"));
 				contact.setLastName(rec.getString("lastName"));
 				contact.setEmail(rec.getString("email"));
-				//contact.setAddress(adr);
+				contact.setAddress(adr);
+		
 				contacts.add(contact);
 			}
 
@@ -390,23 +391,22 @@ public class DAOContact implements IDAOContact {
 	@Override
 	public boolean updateContact(Contact contact) {
 		//1: obtenir une connexion et un EntityManager, en passant par la classe JpaUtil
-		        System.out.printf("zzzzzzzzzzz",contact);
 				EntityManager em=JpaUtil.getEmf().createEntityManager();
 				Contact previousContact = em.find(Contact.class, contact.getIdContact());
 				
 				previousContact.setFirstName(contact.getFirstName());
 				previousContact.setLastName(contact.getLastName());
 				previousContact.setEmail(contact.getEmail());
-				/*previousContact.setAddress(contact.getAddress());
+				previousContact.setAddress(contact.getAddress());
 				previousContact.setPhones(contact.getPhones());
-				previousContact.setContactGroups(contact.getContactGroups());*/
+				previousContact.setContactGroups(contact.getContactGroups());
 
 				em.getTransaction().commit();
 				return true;
 	}
 	
 	@Override
-	public ArrayList<PhoneNumber> getPhonesByIdContact(int idContact) {
+	public ArrayList<PhoneNumber> getPhonesByIdContact(Long idContact) {
 		ArrayList<PhoneNumber> phones = new ArrayList<PhoneNumber>();
 
 		ResultSet rec = null;
@@ -437,7 +437,7 @@ public class DAOContact implements IDAOContact {
 
 
 	@Override
-	public ArrayList<ContactGroup> getGroupesByIdContact(int idContact) {
+	public ArrayList<ContactGroup> getGroupesByIdContact(Long idContact) {
 		ArrayList<ContactGroup> groupes = new ArrayList<ContactGroup>();
 
 		ResultSet rec = null;
@@ -448,7 +448,7 @@ public class DAOContact implements IDAOContact {
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
 			Statement stmt = con.createStatement();
-			rec = stmt.executeQuery("SELECT * FROM contactgroup g join ctc_grp  cg on cg.GRP_ID = g.idContactGroup and g.CTC_ID =" + "'" + idContact + "'" );
+			rec = stmt.executeQuery("SELECT * FROM contactgroup g join ctc_grp  cg on cg.GRP_ID = g.idContactGroup and cg.CTC_ID =" + "'" + idContact + "'" );
 			
 			while (rec.next()) {
 				ContactGroup groupe = new ContactGroup();
@@ -501,7 +501,7 @@ public class DAOContact implements IDAOContact {
 
 	@Override
 	public ArrayList<ContactGroup> getGroupes() {
-		ArrayList<ContactGroup> groupes = new ArrayList<ContactGroup>();
+		ArrayList<ContactGroup>  groupes = new ArrayList<ContactGroup>();
 
 		ResultSet rec = null;
 		Connection con = null;
@@ -528,6 +528,35 @@ public class DAOContact implements IDAOContact {
 			e.printStackTrace();
 		}
 		return groupes;	
+	}
+
+
+	@Override
+	public Address getAdressByIdContact(Long idContact) {
+		Address adr = new Address();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			
+		Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT ad.address FROM address ad join contact as c on ad.idAddress=c.idContact where c.idContact=" + "'" + idContact + "'");
+			while (rec.next()) {
+			    adr = new Address();
+				adr.setAddress(rec.getString("address"));
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return adr;
 	}
 	
 

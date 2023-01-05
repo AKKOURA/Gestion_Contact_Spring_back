@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lip6.entities.Address;
 import com.lip6.entities.Contact;
 import com.lip6.entities.ContactGroup;
 import com.lip6.entities.PhoneNumber;
@@ -52,16 +53,16 @@ public class ContactController {
     
 	@PostMapping(value="/edit")
 	public boolean editContact (@RequestBody  Contact contact){
-		return cservice.updateContact(contact);
+		return cservice.editContact(contact);
 	}
 	
 	@GetMapping(value="{idContact}/phones", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ArrayList<PhoneNumber> getPhonesByIdContact(@PathVariable int idContact) {
+	public ArrayList<PhoneNumber> getPhonesByIdContact(@PathVariable Long idContact) {
 		return cservice.getPhonesByIdContact(idContact);
 	}
 
 	@GetMapping(value="{idContact}/groupes", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ArrayList<ContactGroup> getGroupesByIdContact( @PathVariable int idContact) {
+	public ArrayList<ContactGroup> getGroupesByIdContact( @PathVariable Long idContact) {
 		return cservice.getGroupesByIdContact(idContact);
 	}
 	
@@ -74,4 +75,6 @@ public class ContactController {
 	public ArrayList<ContactGroup> getGroupes() {
 		return cservice.getGroupes();
 	}
+	
+	
 }

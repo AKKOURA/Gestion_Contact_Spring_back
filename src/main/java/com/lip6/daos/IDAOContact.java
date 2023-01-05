@@ -3,6 +3,7 @@ package com.lip6.daos;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lip6.entities.Address;
 import com.lip6.entities.Contact;
 import com.lip6.entities.ContactGroup;
 import com.lip6.entities.PhoneNumber;
@@ -29,10 +30,12 @@ public interface IDAOContact {
 
 	public ArrayList<Contact> getContacts();
 	
-	public ArrayList<PhoneNumber> getPhonesByIdContact(int idContact);
-	public ArrayList<ContactGroup> getGroupesByIdContact(int idContact);
+	public ArrayList<PhoneNumber> getPhonesByIdContact(Long idContact);
+	public ArrayList<ContactGroup> getGroupesByIdContact(Long idContact);
 	
 	public ArrayList<PhoneNumber> getPhones();
 	public ArrayList<ContactGroup> getGroupes();
+	
+	public Address getAdressByIdContact(Long idContact);
 	
 }
