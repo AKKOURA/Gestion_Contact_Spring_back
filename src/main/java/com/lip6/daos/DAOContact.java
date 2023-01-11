@@ -6,12 +6,17 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -199,32 +204,57 @@ public class DAOContact implements IDAOContact {
 	 * @return
 	 */
 	@Override
-	public boolean modifyContact(long id, String firstname, String lastname, String email) {
+	public boolean modifyContact(Contact contact) {
 		boolean success = false;
 		Connection con = null;
+		ArrayList<String> idContactGroups = new ArrayList<String>() ;
+
 		try {
 			Class.forName(Messages.getString("driver"));
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
-			System.out.printf("zzzzzzzzzzz",id);
-			System.out.println(id);
+
 			Statement stmt = con.createStatement();
-			String sqlFirstName = "UPDATE contact SET firstName = " + "'" + firstname + "'" + " WHERE idContact = " + id;
-			String sqlLastName = "UPDATE contact SET lastName = " + "'" + lastname + "'" + " WHERE idContact = " + id;
-			String sqlEmail = "UPDATE contact SET email = " + "'" + email + "'" + " WHERE idContact = " + id;
-
-			if (firstname != "")
+			Statement stmt2 = con.createStatement();
+			Statement stmt3 = con.createStatement();
+			Statement stmt4 = con.createStatement();
+			Statement stmt5 = con.createStatement();
+			String sqlFirstName = "UPDATE contact SET firstName = " + "'" + contact.getFirstName() + "'" + " WHERE idContact = " + contact.getIdContact();
+			String sqlLastName = "UPDATE contact SET lastName = " + "'" + contact.getLastName() + "'" + " WHERE idContact = " +  contact.getIdContact();
+			String sqlEmail = "UPDATE contact SET email = " + "'" + contact.getEmail() + "'" + " WHERE idContact = " +  contact.getIdContact();
+			String sqlAdr = "Update address Set address =" + "'" + contact.getAddress().getAddress() + "'" + " WHERE idAddress = " +  contact.getAddress().getIdAddress();
+			//suppression de tout les phones
+			String sqlDeleteAllPhones = "DELETE FROM phonenumber WHERE id_contact = "  +contact.getIdContact();
+			stmt.executeUpdate(sqlDeleteAllPhones);
+			
+			//suppression de tout les contactGroups
+			String sqlDeleteAllGroupsAsso = "DELETE FROM ctc_grp WHERE ctc_id = " + contact.getIdContact();
+			stmt.executeUpdate(sqlDeleteAllGroupsAsso);
+			
+			// Ajouter les  nv phones ou groupes s'ils existent 
+			if(contact.getPhones().isEmpty() == false) {
+			   for (PhoneNumber phone : contact.getPhones()) {
+				String insertInto = "INSERT INTO phonenumber (`phoneNumber`,`id_contact`) values ("+ "'" +phone.getPhoneNumber()+ "'," + contact.getIdContact()+")  ";
+				stmt3.executeUpdate(insertInto);
+			  }
+			}
+			stmt3.close();
+			
+				
+			if (contact.getFirstName() != "")
 				stmt.executeUpdate(sqlFirstName);
-			if (lastname != "")
+			if (contact.getLastName() != "")
 				stmt.executeUpdate(sqlLastName);
-			if (email != "")
+			if (contact.getEmail() != "")
 				stmt.executeUpdate(sqlEmail);
-
-			success = true;
+			if (contact.getAddress() != null)
+			  stmt.executeUpdate(sqlAdr);
 			stmt.close();
 			con.close();
-
+			success = true;
+			
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 		return success;
@@ -392,19 +422,65 @@ public class DAOContact implements IDAOContact {
 	public boolean updateContact(Contact contact) {
 		//1: obtenir une connexion et un EntityManager, en passant par la classe JpaUtil
 				EntityManager em=JpaUtil.getEmf().createEntityManager();
+				EntityTransaction tx = em.getTransaction();
 				Contact previousContact = em.find(Contact.class, contact.getIdContact());
-				
 				previousContact.setFirstName(contact.getFirstName());
 				previousContact.setLastName(contact.getLastName());
 				previousContact.setEmail(contact.getEmail());
 				previousContact.setAddress(contact.getAddress());
-				previousContact.setPhones(contact.getPhones());
-				previousContact.setContactGroups(contact.getContactGroups());
+				tx.commit();
+				em.close();
 
-				em.getTransaction().commit();
 				return true;
 	}
+	@Override
+	public boolean addGroupsToContact(Set<ContactGroup> contactgGroupes , long idContact) {
+		boolean success= false;
+		
+           if(contactgGroupes.isEmpty() == false) {
+        		//Ajouter les nouveaux ContactGroup au contact
+   			EntityManager em=JpaUtil.getEmf().createEntityManager();
+   			em.getTransaction().begin();
+   			Contact previousContact = em.find(Contact.class,idContact);
+   			
+   		    for(ContactGroup groupe : contactgGroupes) {
+   		    	previousContact.getContactGroups().removeIf(g -> g.getLabel().equalsIgnoreCase(groupe.getLabel()));
+   		    }
+   		    previousContact.getContactGroups().clear();
+   			previousContact.setContactGroups(contactgGroupes);
+   			//previousContact.getContactGroups().addAll(contactgGroupes);
+
+   			em.getTransaction().commit();
+   			
+   			em.close();
+           }
+		
+			success = true;
+
+		return success;
+	}
 	
+	@Override
+	public boolean addPhonesToContact(Set<PhoneNumber> phones , long idContact) {
+		boolean success= false;
+		EntityManager em=JpaUtil.getEmf().createEntityManager();
+
+			if(phones.isEmpty() == false) {
+				//Ajouter les nouveaux phones au contact
+				Contact previousContact = em.find(Contact.class,idContact);
+				em.getTransaction().begin();
+				previousContact.getPhones().addAll(phones);
+				em.getTransaction().commit();
+				em.close();
+			}
+			
+			
+			success = true;
+			
+
+	return success;
+		
+	}
 	@Override
 	public ArrayList<PhoneNumber> getPhonesByIdContact(Long idContact) {
 		ArrayList<PhoneNumber> phones = new ArrayList<PhoneNumber>();
@@ -466,6 +542,37 @@ public class DAOContact implements IDAOContact {
 		}
 		return groupes;	
 	}
+	@Override
+	public ArrayList<ContactGroup> getGroupes() {
+		ArrayList<ContactGroup> groupes = new ArrayList<ContactGroup>();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			
+		Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM contactgroup" );
+			
+			while (rec.next()) {
+				ContactGroup groupe = new ContactGroup();
+				groupe.setIdContactGroup(Long.parseLong(rec.getString("idContactGroup")));
+				groupe.setLabel(rec.getString("label"));
+				groupes.add(groupe);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return groupes;	
+	}
+
 
 
 	@Override
@@ -500,38 +607,6 @@ public class DAOContact implements IDAOContact {
 
 
 	@Override
-	public ArrayList<ContactGroup> getGroupes() {
-		ArrayList<ContactGroup>  groupes = new ArrayList<ContactGroup>();
-
-		ResultSet rec = null;
-		Connection con = null;
-		try {
-			
-		Class.forName(Messages.getString("driver"));
-			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
-					Messages.getString("password"));
-			Statement stmt = con.createStatement();
-			rec = stmt.executeQuery("SELECT * FROM contactgroup" );
-			
-			while (rec.next()) {
-				ContactGroup groupe = new ContactGroup();
-				groupe.setIdContactGroup(Long.parseLong(rec.getString("idContactGroup")));
-				groupe.setLabel(rec.getString("label"));
-				groupes.add(groupe);
-			}
-
-			stmt.close();
-			rec.close();
-			con.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return groupes;	
-	}
-
-
-	@Override
 	public Address getAdressByIdContact(Long idContact) {
 		Address adr = new Address();
 
@@ -543,9 +618,10 @@ public class DAOContact implements IDAOContact {
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
 			Statement stmt = con.createStatement();
-			rec = stmt.executeQuery("SELECT ad.address FROM address ad join contact as c on ad.idAddress=c.idContact where c.idContact=" + "'" + idContact + "'");
+			rec = stmt.executeQuery("SELECT * FROM address ad join contact as c on ad.idAddress=c.id_address where c.idContact=" + "'" + idContact + "'");
 			while (rec.next()) {
 			    adr = new Address();
+			    adr.setIdAddress(Long.parseLong(rec.getString("idAddress")));
 				adr.setAddress(rec.getString("address"));
 			}
 

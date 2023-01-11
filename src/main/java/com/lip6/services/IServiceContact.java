@@ -2,6 +2,7 @@ package com.lip6.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.lip6.entities.Address;
 import com.lip6.entities.Contact;
@@ -20,5 +21,7 @@ public interface IServiceContact {
 	public ArrayList<ContactGroup> getGroupesByIdContact(Long idContact);
 	public ArrayList<PhoneNumber> getPhones();
 	public ArrayList<ContactGroup> getGroupes();
+    public  boolean addGroupsToContact(Set<ContactGroup> contactgGroupes , long idContact);
+	public boolean addPhonesToContact(Set<PhoneNumber> phones , long idContact);
 
 }

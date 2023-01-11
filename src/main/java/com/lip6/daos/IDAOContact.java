@@ -2,6 +2,7 @@ package com.lip6.daos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.lip6.entities.Address;
 import com.lip6.entities.Contact;
@@ -20,7 +21,7 @@ public interface IDAOContact {
 	
 	public Contact getContact(long id);
 	
-	public boolean modifyContact(long id, String firstname, String lastname, String email);
+	public boolean modifyContact(Contact contact);
 	
 	public ArrayList<Contact> getContactByFirstName(String firstname);
 	
@@ -37,5 +38,7 @@ public interface IDAOContact {
 	public ArrayList<ContactGroup> getGroupes();
 	
 	public Address getAdressByIdContact(Long idContact);
+    public  boolean addGroupsToContact(Set<ContactGroup> contactgGroupes , long idContact);
+	public boolean addPhonesToContact(Set<PhoneNumber> phones , long idContact);
 	
 }

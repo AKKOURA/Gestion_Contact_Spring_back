@@ -16,6 +16,14 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long idAddress;
 	
+	public long getIdAddress() {
+		return idAddress;
+	}
+
+	public void setIdAddress(long idAddress) {
+		this.idAddress = idAddress;
+	}
+
 	public Address(String address, Contact contact) {
 		super();
 		this.address = address;

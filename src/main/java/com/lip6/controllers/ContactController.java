@@ -2,6 +2,7 @@ package com.lip6.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -76,5 +77,14 @@ public class ContactController {
 		return cservice.getGroupes();
 	}
 	
+	@PostMapping(value="/add-groupes-to-contact/{idContact}")
+	public boolean addGroupsToContact(@RequestBody Set<ContactGroup> contactgGroupes,  @PathVariable long idContact) {
+		return cservice.addGroupsToContact(contactgGroupes,  idContact);
+	}
+
+	@PostMapping(value="/add-phones-to-contact/{idContact}")
+	public boolean addPhonesToContact(@RequestBody Set<PhoneNumber> phones, @PathVariable long idContact) {
+		return cservice.addPhonesToContact(phones,  idContact);
+	}
 	
 }

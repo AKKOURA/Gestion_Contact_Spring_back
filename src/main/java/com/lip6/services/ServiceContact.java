@@ -2,6 +2,7 @@ package com.lip6.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class ServiceContact implements IServiceContact{
 
 	@Override
 	public boolean updateContact(Contact contact) {
-		return cdao.modifyContact(contact.getIdContact(), contact.getFirstName(), contact.getLastName(), contact.getEmail());
+		return cdao.modifyContact(contact);
 	}
 
 	
@@ -81,6 +82,16 @@ public class ServiceContact implements IServiceContact{
 	@Override
 	public ArrayList<ContactGroup> getGroupes() {
 		return cdao.getGroupes();
+	}
+
+	@Override
+	public boolean addGroupsToContact(Set<ContactGroup> contactgGroupes, long idContact) {
+		return cdao.addGroupsToContact(contactgGroupes,  idContact);
+	}
+
+	@Override
+	public boolean addPhonesToContact(Set<PhoneNumber> phones, long idContact) {
+		return cdao.addPhonesToContact(phones,  idContact);
 	}
 
 
