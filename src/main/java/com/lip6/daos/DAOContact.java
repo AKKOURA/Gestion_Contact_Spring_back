@@ -704,7 +704,7 @@ public class DAOContact implements IDAOContact {
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
 			Statement stmt = con.createStatement();
-			rec = stmt.executeQuery("SELECT * FROM contactgroup WHERE idContactGroup not in (select ctc_grp.GRP_ID  from ctc_grp  WHERE  ctc_grp.CTC_ID =" + "'" + idContact + "')" );
+			rec = stmt.executeQuery("SELECT * FROM contactgroup WHERE idContactGroup not in (select ctc_grp.GRP_ID  from ctc_grp  WHERE  ctc_grp.CTC_ID =" + "'" + idContact + "')");
 			
 			while (rec.next()) {
 				ContactGroup groupe = new ContactGroup();

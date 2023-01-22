@@ -38,12 +38,12 @@ public class ContactController {
 	
 	@GetMapping(value="/contacts-for-join-group/{idGroup}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ArrayList<Contact>  getContactsForJoinGroup(@PathVariable int idGroup) {
-		return cservice.getContacts();
+		return cservice.getContactsForJoinGroup(idGroup);
 	}
 
 	@GetMapping(value="/contacts-by-group/{idGroup}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ArrayList<Contact>  getContactsByGroup(@PathVariable int idGroup) {
-		return cservice.getContacts();
+		return cservice.getContactsByGroup(idGroup);
 	}
 
 
