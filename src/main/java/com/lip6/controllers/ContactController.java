@@ -77,14 +77,19 @@ public class ContactController {
 		return cservice.getGroupes();
 	}
 	
-	@PostMapping(value="/add-groupes-to-contact/{idContact}")
-	public boolean addGroupsToContact(@RequestBody Set<ContactGroup> contactgGroupes,  @PathVariable long idContact) {
-		return cservice.addGroupsToContact(contactgGroupes,  idContact);
+	@GetMapping(value="/{idContact}/groupes-to-join", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<ContactGroup> getGroupesForAddContact(@PathVariable long idContact) {
+		return cservice.getGroupesForAddContact(idContact);
+	}
+	
+	@GetMapping(value="/add-groupe/{idContactGroup}/to-contact/{idContact}")
+	public boolean addGroupsToContact(@PathVariable long idContactGroup,  @PathVariable long idContact) {
+		return cservice.addGroupToContact(idContactGroup,  idContact);
 	}
 
-	@PostMapping(value="/add-phones-to-contact/{idContact}")
-	public boolean addPhonesToContact(@RequestBody Set<PhoneNumber> phones, @PathVariable long idContact) {
-		return cservice.addPhonesToContact(phones,  idContact);
+	@GetMapping(value="/delete-group/{idContactGroup}/to-contact/{idContact}")
+	public boolean deleteGroupFromContact( @PathVariable long idContactGroup,  @PathVariable long idContact) {
+		return cservice.deleteGroupFromContact(idContactGroup,  idContact);
 	}
 	
 	@PostMapping(value="/creategroupe")

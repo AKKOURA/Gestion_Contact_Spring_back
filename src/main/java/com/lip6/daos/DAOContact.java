@@ -31,15 +31,15 @@ import com.lip6.util.JpaUtil;
 @Repository
 public class DAOContact implements IDAOContact {
 
-	   //création par setter
+	   //crï¿½ation par setter
 		@Autowired 
 		private Contact contact1;
 		
-		//création par constructeur
+		//crï¿½ation par constructeur
 		@Autowired 
 		private Contact contact2;
 		
-	//réation de contact par constructeur ou setter
+	//rï¿½ation de contact par constructeur ou setter
 	@Override
 	public boolean addContact(Contact contact) {
 		//1: obtenir une connexion et un EntityManager, en passant par la classe JpaUtil
@@ -47,8 +47,8 @@ public class DAOContact implements IDAOContact {
 		// 3 : Ouverture transaction
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
-		// 4 : Persistance Objet/Relationnel : création d'un enregistrement en base, 
-		//lorsque les assocations seront présentes alors on persist que le contact)
+		// 4 : Persistance Objet/Relationnel : crï¿½ation d'un enregistrement en base, 
+		//lorsque les assocations seront prï¿½sentes alors on persist que le contact)
 		if(em.find(Contact.class, contact1.getIdContact()) == null && em.find(Contact.class, contact2.getIdContact()) == null) {
 			em.persist(contact1);
 			em.persist(contact2);
@@ -59,7 +59,7 @@ public class DAOContact implements IDAOContact {
 	   
 		// 5 : Fermeture transaction
 		tx.commit();
-		// 6 : Fermeture de l'EntityManager et de unité de travail JPA
+		// 6 : Fermeture de l'EntityManager et de unitï¿½ de travail JPA
 		em.close();
 
 		return true;
@@ -74,14 +74,14 @@ public class DAOContact implements IDAOContact {
 	 * @param email
 	 * @return renvoit le nouveau contact
 	 */
-	//création de contact via le formulaire
+	//crï¿½ation de contact via le formulaire
 	@Transactional
 	@Override
 	public  boolean addContact(String firstname, String lastname, String email) {
 
 		//1: obtenir une connexion et un EntityManager, en passant par la classe JpaUtil
 		EntityManager em=JpaUtil.getEmf().createEntityManager();
-		// 2 : Instanciation Objet métier
+		// 2 : Instanciation Objet mï¿½tier
 		Contact contact = new Contact(firstname , lastname,email);
 		PhoneNumber phoneNumber1 = new PhoneNumber("0664252545"); 
 		PhoneNumber phoneNumber2 = new PhoneNumber("0664252545");
@@ -101,22 +101,23 @@ public class DAOContact implements IDAOContact {
 		contact.getContactGroups().add(contactGroup1);
 		contactGroup2.getContacts().add(contact);
 		
+		
 		//PhoneNumber PhoneNumber3 = em.find(PhoneNumber.class, 2);
 		//TESTER UN MERGE 
 		
 		// 3 : Ouverture transaction
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
-		// 4 : Persistance Objet/Relationnel : création d'un enregistrement en base, 
-		//lorsque les assocations seront présentes alors on persist que le contact
+		// 4 : Persistance Objet/Relationnel : crï¿½ation d'un enregistrement en base, 
+		//lorsque les assocations seront prï¿½sentes alors on persist que le contact
 		em.persist(contact);
 		//em.persist(phoneNumber);
 		//em.persist(contactGroup);
 		//em.persist(address);
-		// L’entité étant en mode managée, pas besoin de refaire un persist
+		// Lï¿½entitï¿½ ï¿½tant en mode managï¿½e, pas besoin de refaire un persist
 		// 5 : Fermeture transaction
 		tx.commit();
-		// 6 : Fermeture de l'EntityManager et de unité de travail JPA
+		// 6 : Fermeture de l'EntityManager et de unitï¿½ de travail JPA
 		em.close();
 
 		return true;
@@ -213,12 +214,8 @@ public class DAOContact implements IDAOContact {
 			Class.forName(Messages.getString("driver"));
 			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
 					Messages.getString("password"));
-
 			Statement stmt = con.createStatement();
-			Statement stmt2 = con.createStatement();
 			Statement stmt3 = con.createStatement();
-			Statement stmt4 = con.createStatement();
-			Statement stmt5 = con.createStatement();
 			String sqlFirstName = "UPDATE contact SET firstName = " + "'" + contact.getFirstName() + "'" + " WHERE idContact = " + contact.getIdContact();
 			String sqlLastName = "UPDATE contact SET lastName = " + "'" + contact.getLastName() + "'" + " WHERE idContact = " +  contact.getIdContact();
 			String sqlEmail = "UPDATE contact SET email = " + "'" + contact.getEmail() + "'" + " WHERE idContact = " +  contact.getIdContact();
@@ -226,11 +223,7 @@ public class DAOContact implements IDAOContact {
 			//suppression de tout les phones
 			String sqlDeleteAllPhones = "DELETE FROM phonenumber WHERE id_contact = "  +contact.getIdContact();
 			stmt.executeUpdate(sqlDeleteAllPhones);
-			
-			//suppression de tout les contactGroups
-			String sqlDeleteAllGroupsAsso = "DELETE FROM ctc_grp WHERE ctc_id = " + contact.getIdContact();
-			stmt.executeUpdate(sqlDeleteAllGroupsAsso);
-			
+				
 			// Ajouter les  nv phones ou groupes s'ils existent 
 			if(contact.getPhones().isEmpty() == false) {
 			   for (PhoneNumber phone : contact.getPhones()) {
@@ -434,53 +427,24 @@ public class DAOContact implements IDAOContact {
 				return true;
 	}
 	@Override
-	public boolean addGroupsToContact(Set<ContactGroup> contactgGroupes , long idContact) {
+	public boolean addGroupToContact(long idContactGroup , long idContact) {
 		boolean success= false;
 		
-           if(contactgGroupes.isEmpty() == false) {
-        		//Ajouter les nouveaux ContactGroup au contact
-   			EntityManager em=JpaUtil.getEmf().createEntityManager();
-   			em.getTransaction().begin();
-   			Contact previousContact = em.find(Contact.class,idContact);
-   			
-   		    for(ContactGroup groupe : contactgGroupes) {
-   		    	previousContact.getContactGroups().removeIf(g -> g.getLabel().equalsIgnoreCase(groupe.getLabel()));
-   		    }
-   		    previousContact.getContactGroups().clear();
-   			previousContact.setContactGroups(contactgGroupes);
-   			//previousContact.getContactGroups().addAll(contactgGroupes);
-
-   			em.getTransaction().commit();
-   			
-   			em.close();
-           }
-		
-			success = true;
-
-		return success;
+	    EntityManager em=JpaUtil.getEmf().createEntityManager();
+	    em.getTransaction().begin();
+	   	Contact previousContact = em.find(Contact.class,idContact);
+	   	ContactGroup groupToAdd = em.find(ContactGroup.class, idContactGroup);
+	   	
+	   	if(previousContact.getContactGroups().contains(groupToAdd) == false) {
+	     	previousContact.getContactGroups().add(groupToAdd);
+	   	}
+	   			
+	   em.getTransaction().commit();
+	   em.close();
+	   success = true;
+       return success;
 	}
 	
-	@Override
-	public boolean addPhonesToContact(Set<PhoneNumber> phones , long idContact) {
-		boolean success= false;
-		EntityManager em=JpaUtil.getEmf().createEntityManager();
-
-			if(phones.isEmpty() == false) {
-				//Ajouter les nouveaux phones au contact
-				Contact previousContact = em.find(Contact.class,idContact);
-				em.getTransaction().begin();
-				previousContact.getPhones().addAll(phones);
-				em.getTransaction().commit();
-				em.close();
-			}
-			
-			
-			success = true;
-			
-
-	return success;
-		
-	}
 	@Override
 	public ArrayList<PhoneNumber> getPhonesByIdContact(Long idContact) {
 		ArrayList<PhoneNumber> phones = new ArrayList<PhoneNumber>();
@@ -643,11 +607,11 @@ public class DAOContact implements IDAOContact {
 				// 3 : Ouverture transaction
 				EntityTransaction tx = em.getTransaction();
 				tx.begin();
-				// 4 : Persistance Objet/Relationnel : création d'un enregistrement en base, 
+				// 4 : Persistance Objet/Relationnel : crï¿½ation d'un enregistrement en base, 
 				em.persist(contactgroup);
 				// 5 : Fermeture transaction}
 				tx.commit();
-				// 6 : Fermeture de l'EntityManager et de unité de travail JPA
+				// 6 : Fermeture de l'EntityManager et de unitï¿½ de travail JPA
 				em.close();
 				
 				return false;
@@ -685,7 +649,19 @@ public class DAOContact implements IDAOContact {
 			}
 
 			return success;
+	}
 
+	public boolean deleteGroupFromContact(long idContactGroup, long idContact) {
+		boolean success= false;
+		EntityManager em=JpaUtil.getEmf().createEntityManager();
+  	    em.getTransaction().begin();
+		Contact previousContact = em.find(Contact.class,idContact);
+		ContactGroup groupToDelete = em.find(ContactGroup.class, idContactGroup);
+		previousContact.getContactGroups().remove(groupToDelete);
+		em.getTransaction().commit();
+	    em.close();
+		success = true;
+		return  success;
 	}
 
 
@@ -718,6 +694,33 @@ public class DAOContact implements IDAOContact {
 	//liste des groupe 
 	
 
+	public ArrayList<ContactGroup> getGroupesForAddContact(long idContact) {
+		ArrayList<ContactGroup> groupes = new ArrayList<ContactGroup>();
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			
+		Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM contactgroup WHERE idContactGroup not in (select ctc_grp.GRP_ID  from ctc_grp  WHERE  ctc_grp.CTC_ID =" + "'" + idContact + "')" );
+			
+			while (rec.next()) {
+				ContactGroup groupe = new ContactGroup();
+				groupe.setIdContactGroup(Long.parseLong(rec.getString("idContactGroup")));
+				groupe.setLabel(rec.getString("label"));
+				groupes.add(groupe);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return groupes;		}
 	
 
 

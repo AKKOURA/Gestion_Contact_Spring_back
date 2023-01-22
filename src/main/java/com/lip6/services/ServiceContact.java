@@ -15,7 +15,7 @@ import com.lip6.entities.PhoneNumber;
 
 @Service
 public class ServiceContact implements IServiceContact{
-	//déclaration d'injection de dépendance par annotation
+	//dï¿½claration d'injection de dï¿½pendance par annotation
 	@Autowired 
 	private IDAOContact cdao;
 	
@@ -29,9 +29,9 @@ public class ServiceContact implements IServiceContact{
 
 		boolean ok=cdao.addContact(fname, lname, email);
 		if (ok)
-			System.out.println("Contact ajouté!");
+			System.out.println("Contact ajoutï¿½!");
 		else
-			System.out.println("Contact non ajouté!");		
+			System.out.println("Contact non ajoutï¿½!");		
 	}
 
 	@Override
@@ -39,9 +39,9 @@ public class ServiceContact implements IServiceContact{
 		//Injection de dep de contact , aucun new !!
 		boolean ok=cdao.addContact(contact);
 		if (ok)
-			System.out.println("Contact ajouté!");
+			System.out.println("Contact ajoutï¿½!");
 		else
-			System.out.println("Contact non ajouté!");
+			System.out.println("Contact non ajoutï¿½!");
 		
 		return ok;
 		
@@ -85,22 +85,22 @@ public class ServiceContact implements IServiceContact{
 	}
 
 	@Override
-	public boolean addGroupsToContact(Set<ContactGroup> contactgGroupes, long idContact) {
-		return cdao.addGroupsToContact(contactgGroupes,  idContact);
+	public boolean addGroupToContact(long idContactGroup, long idContact) {
+		return cdao.addGroupToContact(idContactGroup,  idContact);
 	}
 
 	@Override
-	public boolean addPhonesToContact(Set<PhoneNumber> phones, long idContact) {
-		return cdao.addPhonesToContact(phones,  idContact);
+	public boolean deleteGroupFromContact(long idContactGroup, long idContact) {
+		return cdao.deleteGroupFromContact(idContactGroup, idContact);
 	}
 
 	@Override
 	public boolean createGroupe(ContactGroup contactgroup) {
 		boolean ok=cdao.addGroupe(contactgroup);
 		if (ok)
-			System.out.println("Groupe ajouté!");
+			System.out.println("Groupe ajoutï¿½!");
 		else
-			System.out.println("Groupe non ajouté!");
+			System.out.println("Groupe non ajoutï¿½!");
 		
 		return ok;
 	}
@@ -114,8 +114,10 @@ public class ServiceContact implements IServiceContact{
 	}
 
 
+	public ArrayList<ContactGroup> getGroupesForAddContact(long idContact) {
+		return cdao.getGroupesForAddContact(idContact);
+	}
 
 
-	
 
 }
