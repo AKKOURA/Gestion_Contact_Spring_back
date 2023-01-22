@@ -94,6 +94,25 @@ public class ServiceContact implements IServiceContact{
 		return cdao.addPhonesToContact(phones,  idContact);
 	}
 
+	@Override
+	public boolean createGroupe(ContactGroup contactgroup) {
+		boolean ok=cdao.addGroupe(contactgroup);
+		if (ok)
+			System.out.println("Groupe ajouté!");
+		else
+			System.out.println("Groupe non ajouté!");
+		
+		return ok;
+	}
+	@Override
+	public boolean deleteGroupe(long id) {
+		return cdao.deleteGroupe(id);
+	}
+	@Override
+	public boolean updateGroupe(ContactGroup contactgroup) {
+		return cdao.updateGroupe(contactgroup);
+	}
+
 
 
 

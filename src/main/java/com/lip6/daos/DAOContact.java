@@ -634,6 +634,90 @@ public class DAOContact implements IDAOContact {
 		}
 		return adr;
 	}
+
+
+	@Override
+	public boolean addGroupe(ContactGroup contactgroup) {
+		//1: obtenir une connexion et un EntityManager, en passant par la classe JpaUtil
+				EntityManager em=JpaUtil.getEmf().createEntityManager();
+				// 3 : Ouverture transaction
+				EntityTransaction tx = em.getTransaction();
+				tx.begin();
+				// 4 : Persistance Objet/Relationnel : création d'un enregistrement en base, 
+				em.persist(contactgroup);
+				// 5 : Fermeture transaction}
+				tx.commit();
+				// 6 : Fermeture de l'EntityManager et de unité de travail JPA
+				em.close();
+				
+				return false;
+
+				
+			}
+
+
+	@Override
+	public boolean deleteGroupe(long id) {
+			boolean success = false;
+			Connection con = null;
+			try {
+				Class.forName(Messages.getString("driver"));
+				con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),Messages.getString("password"));
+				Statement stmt = con.createStatement();
+				String request1 = "select grp_id from ctc_grp WHERE grp_id= " + id;
+				String request = "DELETE FROM contactgroup WHERE idContactGroup= " + id;
+				String request2 = "DELETE FROM ctc_grp WHERE grp_id= " + id;
+				
+				if(request1.isEmpty()) {
+				stmt.executeUpdate(request);
+				 success = true;
+				}
+				else {
+					stmt.executeUpdate(request2);
+					stmt.executeUpdate(request);
+					success = true;}
+				
+				stmt.close();
+				con.close();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return success;
+
+	}
+
+
+	@Override
+	public boolean updateGroupe(ContactGroup contactgroup) {
+		boolean success = false;
+		Connection con = null;
+		try {
+			Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			String sqlLabel = "UPDATE contactgroup SET label = " + "'" + contactgroup.getLabel() + "'" + " WHERE idContactGroup = " + contactgroup.getIdContactGroup();
+				
+			if (contactgroup.getLabel() != "")
+				stmt.executeUpdate(sqlLabel);
+			stmt.close();
+			con.close();
+			success = true;
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return success;
+
+	}
+	
+	
+	//liste des groupe 
+	
+
 	
 
 

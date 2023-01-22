@@ -87,4 +87,19 @@ public class ContactController {
 		return cservice.addPhonesToContact(phones,  idContact);
 	}
 	
+	@PostMapping(value="/creategroupe")
+	public boolean createGroupe(@RequestBody ContactGroup contactgroupe){
+		 return cservice.createGroupe(contactgroupe);
+	}
+	
+	@GetMapping(value="/deletegroupe/{id}")
+	public boolean deleteGroupById(@PathVariable int id){
+		return cservice.deleteGroupe(id);
+	}
+	
+	@PostMapping(value="/updategroupe")
+	public boolean updateGroupe(@RequestBody  ContactGroup contactgroup){
+		return cservice.updateGroupe(contactgroup);
+	}
+	
 }
