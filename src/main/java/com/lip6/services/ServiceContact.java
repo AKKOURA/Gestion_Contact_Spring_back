@@ -118,5 +118,25 @@ public class ServiceContact implements IServiceContact{
 		return cdao.getGroupesForAddContact(idContact);
 	}
 
+	@Override
+	public ArrayList<Contact> getContactsForJoinGroup(long idContactGroup) {
+		return cdao.getContactsForJoinGroup(idContactGroup);
+	}
+
+	@Override
+	public ArrayList<Contact> getContactsByGroup(long idContactGroup) {
+		return cdao.getContactsByGroup(idContactGroup);
+	}
+
+	@Override
+	public boolean addContactToGroup(long idContact, long idContactGroup) {
+		return cdao.addContactToGroup(idContact, idContactGroup);
+	}
+
+	@Override
+	public boolean deleteContactFromGroup(long idContact, long idContactGroup) {
+		return cdao.deleteContactFromGroup(idContact, idContactGroup);
+	}
+
 
 }

@@ -49,6 +49,13 @@ public interface IDAOContact {
     public boolean deleteGroupFromContact(long idContactGroup,long idContact);
     
 	public ArrayList<ContactGroup> getGroupesForAddContact(long idContact);
+	
+	public ArrayList<Contact> getContactsForJoinGroup(long idContactGroup);
+	public ArrayList<Contact> getContactsByGroup(long idContactGroup);
+	
+	public boolean addContactToGroup(long idContact,long idContactGroup);
+	public boolean deleteContactFromGroup(long idContact,long idContactGroup);
+	
     
 	
 }

@@ -721,6 +721,103 @@ public class DAOContact implements IDAOContact {
 			e.printStackTrace();
 		}
 		return groupes;		}
+
+
+	@Override
+	public ArrayList<Contact> getContactsForJoinGroup(long idContactGroup) {
+		ArrayList<Contact> contacts = new ArrayList<Contact>();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			EntityManager em=JpaUtil.getEmf().createEntityManager();
+			
+			Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM contact where idContact not in (select ctc_grp.ctc_id from ctc_grp where ctc_grp.GRP_ID ="+ "'" + idContactGroup + "')");
+			while (rec.next()) {
+				Contact contact = new Contact();
+				contact.setFirstName(rec.getString("firstName"));
+				contact.setLastName(rec.getString("lastName"));	
+				contacts.add(contact);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contacts;
+	}
+
+
+	@Override
+	public ArrayList<Contact> getContactsByGroup(long idContactGroup) {
+		ArrayList<Contact> contacts = new ArrayList<Contact>();
+
+		ResultSet rec = null;
+		Connection con = null;
+		try {
+			EntityManager em=JpaUtil.getEmf().createEntityManager();
+			
+			Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			Statement stmt = con.createStatement();
+			rec = stmt.executeQuery("SELECT * FROM contact where idContact in (select ctc_grp.ctc_id from ctc_grp where ctc_grp.GRP_ID =" + "'" + idContactGroup + "')");
+			while (rec.next()) {
+				Contact contact = new Contact();
+				contact.setFirstName(rec.getString("firstName"));
+				contact.setLastName(rec.getString("lastName"));	
+				contacts.add(contact);
+			}
+
+			stmt.close();
+			rec.close();
+			con.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contacts;
+	}
+
+
+	@Override
+	public boolean addContactToGroup(long idContact, long idContactGroup) {
+		boolean success= false;
+		EntityManager em=JpaUtil.getEmf().createEntityManager();
+  	    em.getTransaction().begin();
+		ContactGroup previousGroup = em.find(ContactGroup.class,idContactGroup);
+		Contact contactToAdd = em.find(Contact.class, idContact);
+		
+		if(previousGroup.getContacts().contains(contactToAdd) == false) {
+		previousGroup.getContacts().add(contactToAdd);}
+		em.getTransaction().commit();
+	    em.close();
+		success = true;
+		return  success;
+	}
+
+
+	@Override
+	public boolean deleteContactFromGroup(long idContact, long idContactGroup) {
+		boolean success= false;
+		EntityManager em=JpaUtil.getEmf().createEntityManager();
+  	    em.getTransaction().begin();
+		ContactGroup previousGroup = em.find(ContactGroup.class,idContactGroup);
+		Contact contactToDelete = em.find(Contact.class, idContact);
+		
+		previousGroup.getContacts().remove(contactToDelete);
+		em.getTransaction().commit();
+	    em.close();
+		success = true;
+		return  success;
+	}
 	
 
 
