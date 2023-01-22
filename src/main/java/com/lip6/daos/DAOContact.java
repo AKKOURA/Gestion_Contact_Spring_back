@@ -739,6 +739,7 @@ public class DAOContact implements IDAOContact {
 			rec = stmt.executeQuery("SELECT * FROM contact where idContact not in (select ctc_grp.ctc_id from ctc_grp where ctc_grp.GRP_ID ="+ "'" + idContactGroup + "')");
 			while (rec.next()) {
 				Contact contact = new Contact();
+				contact.setIdContact(Long.parseLong(rec.getString("idContact")));
 				contact.setFirstName(rec.getString("firstName"));
 				contact.setLastName(rec.getString("lastName"));	
 				contacts.add(contact);
@@ -771,6 +772,7 @@ public class DAOContact implements IDAOContact {
 			rec = stmt.executeQuery("SELECT * FROM contact where idContact in (select ctc_grp.ctc_id from ctc_grp where ctc_grp.GRP_ID =" + "'" + idContactGroup + "')");
 			while (rec.next()) {
 				Contact contact = new Contact();
+				contact.setIdContact(Long.parseLong(rec.getString("idContact")));
 				contact.setFirstName(rec.getString("firstName"));
 				contact.setLastName(rec.getString("lastName"));	
 				contacts.add(contact);
@@ -790,33 +792,54 @@ public class DAOContact implements IDAOContact {
 	@Override
 	public boolean addContactToGroup(long idContact, long idContactGroup) {
 		boolean success= false;
-		EntityManager em=JpaUtil.getEmf().createEntityManager();
-  	    em.getTransaction().begin();
-		ContactGroup previousGroup = em.find(ContactGroup.class,idContactGroup);
-		Contact contactToAdd = em.find(Contact.class, idContact);
+		Connection con = null;
+
+		try {
+			Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			   Statement stmt = con.createStatement();
 		
-		if(previousGroup.getContacts().contains(contactToAdd) == false) {
-		previousGroup.getContacts().add(contactToAdd);}
-		em.getTransaction().commit();
-	    em.close();
-		success = true;
+				String insertInto = "INSERT INTO ctc_grp(`CTC_ID`,`GRP_ID`) VALUES ("+ "'" +idContact+ "'," + idContactGroup+")  ";
+				stmt.executeUpdate(insertInto);
+				stmt.close();
+		
+			con.close();
+			success = true;
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
 		return  success;
+
 	}
 
 
 	@Override
 	public boolean deleteContactFromGroup(long idContact, long idContactGroup) {
 		boolean success= false;
-		EntityManager em=JpaUtil.getEmf().createEntityManager();
-  	    em.getTransaction().begin();
-		ContactGroup previousGroup = em.find(ContactGroup.class,idContactGroup);
-		Contact contactToDelete = em.find(Contact.class, idContact);
+		Connection con = null;
+
+		try {
+			Class.forName(Messages.getString("driver"));
+			con = DriverManager.getConnection(Messages.getString("database"), Messages.getString("username"),
+					Messages.getString("password"));
+			   Statement stmt = con.createStatement();
 		
-		previousGroup.getContacts().remove(contactToDelete);
-		em.getTransaction().commit();
-	    em.close();
-		success = true;
+				String insertInto = "DELETE FROM ctc_grp WHERE CTC_ID ="+ "'" +idContact+ "'AND GRP_ID =" + "'" + idContactGroup+"'";
+				stmt.executeUpdate(insertInto);
+				stmt.close();
+		
+			con.close();
+			success = true;
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
 		return  success;
+
 	}
 	
 
