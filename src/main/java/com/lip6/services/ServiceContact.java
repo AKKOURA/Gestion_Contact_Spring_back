@@ -113,11 +113,9 @@ public class ServiceContact implements IServiceContact{
 		return cdao.updateGroupe(contactgroup);
 	}
 
-
+    @Override
 	public ArrayList<ContactGroup> getGroupesForAddContact(long idContact) {
 		return cdao.getGroupesForAddContact(idContact);
 	}
-
-
 
 }
