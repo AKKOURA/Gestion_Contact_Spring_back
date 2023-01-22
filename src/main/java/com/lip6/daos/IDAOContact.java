@@ -40,8 +40,7 @@ public interface IDAOContact {
 	public boolean addGroupe(ContactGroup contactgroup);
 	
 	public Address getAdressByIdContact(Long idContact);
-    public  boolean addGroupsToContact(Set<ContactGroup> contactgGroupes , long idContact);
-	public boolean addPhonesToContact(Set<PhoneNumber> phones , long idContact);
+
 	public boolean deleteGroupe(long id);
 	public boolean updateGroupe(ContactGroup contactgroup);
 	

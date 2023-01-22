@@ -23,8 +23,6 @@ public interface IServiceContact {
 	public ArrayList<ContactGroup> getGroupesByIdContact(Long idContact);
 	public ArrayList<PhoneNumber> getPhones();
 	public ArrayList<ContactGroup> getGroupes();
-    public  boolean addGroupsToContact(Set<ContactGroup> contactgGroupes , long idContact);
-	public boolean addPhonesToContact(Set<PhoneNumber> phones , long idContact);
 	boolean updateGroupe(ContactGroup contactgroup);
 	public  boolean addGroupToContact(long idContactGroup , long idContact);
 	public boolean deleteGroupFromContact(long idContactGroup,long idContact);

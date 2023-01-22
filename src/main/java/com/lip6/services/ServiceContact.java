@@ -118,4 +118,5 @@ public class ServiceContact implements IServiceContact{
 		return cdao.getGroupesForAddContact(idContact);
 	}
 
+
 }
